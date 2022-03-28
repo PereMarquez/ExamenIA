@@ -5,46 +5,6 @@
     (maximo-cajas 3)
 )
 
-(defrule preparar-naranja-de-una
-    (declare (salience 10))
-    ?f <- (robot linea-pedido $?x palet naranja ?cajasNaranja $?y)
-    ?f2 <- (pedido naranja ?pedidoNaranja $?z)
-    ?f3 <- (maximo-cajas ?maxCajas)
-    =>
-
-    (assert(robot linea-pedido $?x pedido naranja ?pedidoNaranja palet naranja (- ?cajasNaranja ?pedidoNaranja) $?z))
-)
-
-(defrule preparar-manzana-de-una
-    (declare (salience 10))
-    ?f <- (robot linea-pedido $?x palet naranja ?cajasNaranja manzana ?cajasManzana $?y)
-    ?f2 <- (pedido $?z manzana ?pedidoManzana $?k)
-    ?f3 <- (maximo-cajas ?maxCajas)
-
-    =>
-    (assert(robot linea-pedido $?x pedido manzana ?pedidoManzana palet naranja ?cajasNaranja palet manzana (- ?cajasManzana ?pedidoManzana) $?y))
-)
-
-(defrule preparar-caqui-de-una
-    (declare (salience 10))
-    ?f <- (robot linea-pedido $?x palet naranja ?cajasNaranja palet manzana ?cajasManzana palet caqui ?cajasCaqui $?y)
-    ?f2 <- (pedido naranja ?pedidoNaranja manzana ?pedidoManzana caqui ?pedidoCaqui uva ?pedidoUva)
-    ?f3 <- (maximo-cajas ?maxCajas)
-
-    =>
-    (assert(robot linea-pedido $?x pedido caqui ?pedidoCaqui palet naranja ?cajasNaranja palet manzana ?cajasManzana palet caqui (- ?cajasCaqui ?pedidoCaqui) $?y))
-)
-
-(defrule preparar-uva-de-una
-    (declare (salience 10))
-    ?f <- (robot linea-pedido $?x palet naranja ?cajasNaranja palet manzana ?cajasManzana palet caqui ?cajasCaqui palet uva ?cajasUva $?y)
-    ?f2 <- (pedido naranja ?pedidoNaranja manzana ?pedidoManzana caqui ?pedidoCaqui uva ?pedidoUva)
-    ?f3 <- (maximo-cajas ?maxCajas)
-
-    =>
-    (assert(robot linea-pedido $?x pedido uva ?pedidoUva palet naranja ?cajasNaranja palet manzana ?cajasManzana palet caqui ?cajasCaqui palet uva (- ?cajasUva ?pedidoUva) $?y))
-)
-
 (defrule inicializar-stock
     (declare (salience 100))
 
@@ -74,3 +34,41 @@
     (printout t "El pedido no se puede realizar, no hay tanto stock")
     (halt)
 )
+
+(defrule preparar-naranja-de-una
+    ?f <- (robot linea-pedido $?x palet naranja ?cajasNaranja $?y)
+    ?f2 <- (pedido naranja ?pedidoNaranja $?z)
+    ?f3 <- (maximo-cajas ?maxCajas)
+    (test (< ?pedidoNaranja ?cajasNaranja))
+    =>
+    (assert(robot linea-pedido $?x pedido naranja ?pedidoNaranja palet naranja (- ?cajasNaranja ?pedidoNaranja) $?z))
+)
+
+(defrule preparar-manzana-de-una
+    ?f <- (robot linea-pedido $?x palet naranja ?cajasNaranja manzana ?cajasManzana $?y)
+    ?f2 <- (pedido $?z manzana ?pedidoManzana $?k)
+    ?f3 <- (maximo-cajas ?maxCajas)
+    (test (< ?pedidoManzana ?cajasManzana))
+    =>
+    (assert(robot linea-pedido $?x pedido manzana ?pedidoManzana palet naranja ?cajasNaranja palet manzana (- ?cajasManzana ?pedidoManzana) $?y))
+)
+
+(defrule preparar-caqui-de-una
+    ?f <- (robot linea-pedido $?x palet naranja ?cajasNaranja palet manzana ?cajasManzana palet caqui ?cajasCaqui $?y)
+    ?f2 <- (pedido naranja ?pedidoNaranja manzana ?pedidoManzana caqui ?pedidoCaqui uva ?pedidoUva)
+    ?f3 <- (maximo-cajas ?maxCajas)
+    (test (< ?pedidoCaqui ?cajasCaqui))
+    =>
+    (assert(robot linea-pedido $?x pedido caqui ?pedidoCaqui palet naranja ?cajasNaranja palet manzana ?cajasManzana palet caqui (- ?cajasCaqui ?pedidoCaqui) $?y))
+)
+
+(defrule preparar-uva-de-una
+    ?f <- (robot linea-pedido $?x palet naranja ?cajasNaranja palet manzana ?cajasManzana palet caqui ?cajasCaqui palet uva ?cajasUva $?y)
+    ?f2 <- (pedido naranja ?pedidoNaranja manzana ?pedidoManzana caqui ?pedidoCaqui uva ?pedidoUva)
+    ?f3 <- (maximo-cajas ?maxCajas)
+    (test (< ?pedidoUva ?cajasUva))
+    =>
+    (assert(robot linea-pedido $?x pedido uva ?pedidoUva palet naranja ?cajasNaranja palet manzana ?cajasManzana palet caqui ?cajasCaqui palet uva (- ?cajasUva ?pedidoUva) $?y))
+)
+
+
